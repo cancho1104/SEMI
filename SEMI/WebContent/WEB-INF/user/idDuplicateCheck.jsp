@@ -22,7 +22,11 @@
 		<script type="text/javascript">
 			
 			$(document).ready(function () {
-				
+				$("#userid").keydown(function(event) {
+					if(event.keyCode == 13) {// 엔터를 했을 경우
+						idCheck();			
+					}
+				});// end of $("#loginPwd").keydown()-----------------------------------
 			});
 			
 			
@@ -107,7 +111,7 @@
 			<div class="row main" style="margin: 10px;">
 				<div class="main-login main-center">
 				<h3>아이디 중복 확인</h3>
-					<form class="" name="idCechkFrm">
+					<form class="" name="idCechkFrm" onsubmit="return false">
 						
 						<div class="form-group"  id="idcheck">
 							<label for="userid" class="cols-sm-2 control-label">아이디</label>
