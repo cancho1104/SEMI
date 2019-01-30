@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 		description = "사용자가 웹에서 *.do 를 했을경우 이 클래스가 먼저 응답을 해주도록 한다.", 
 		urlPatterns = { "*.do" }, 
 		initParams = { 
-				@WebInitParam(name = "propertyConfig", value = "C:/myjsp/SEMI/WebContent/WEB-INF/Command.properties", description = "*.do 에 대한 클래스의 매핑파일")
+				@WebInitParam(name = "propertyConfig", value = "C:/Users/user1/git/SEMI/SEMI/WebContent/WEB-INF/Command.properties", description = "*.do 에 대한 클래스의 매핑파일")
 		})
 public class FrontController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -105,7 +105,7 @@ public class FrontController extends HttpServlet {
 			System.out.println("문자열로 명명되어진 클래스가 없습니다.");
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			System.out.println("C:/myjsp/MyMVC/WebContent/WEB-INF/Command.properties 파일이 없습니다.");
+			System.out.println("C:/Users/user1/git/SEMI/SEMI/WebContent/WEB-INF/Command.properties");
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
