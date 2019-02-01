@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="../header.jsp" />
 <link rel="stylesheet" type="text/css" href="styles/product_styles.css">
 <link rel="stylesheet" type="text/css"
@@ -36,70 +37,145 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
 .active{ border:1px solid orange;}
 
 </style>
+
 <script>
-$(document).ready(function(){
-    //-- Click on detail
-    $("ul.menu-items > li").on("click",function(){
-        $("ul.menu-items > li").removeClass("active");
-        $(this).addClass("active");
-    })
 
-    $(".attr.color").on("click",function(){
-        $(".attr.color").removeClass("active");
-        $(this).addClass("active");
-        if($(this).is(".color")){
-        	var color = $(this).attr('style');
-        	color = color.substring(color.indexOf('#'),color.length-1);
-        	$("#color").val(color);
-        }
-       
-    })
-    $(".attr2.ram").on("click",function(){
+	var productPrice = ${svo.saleprice}
+	var calcRamprice = 0;
+	var calcDiskprice = 0;
+	
 
-        $(".attr2.ram").removeClass("active");
-        $(this).addClass("active");
-       
-        if($(this).is(".ram")){
-        	var ram = $(this).text();
-        	$("#ram").val(ram);
-        	console.log("ram:"+ram);	
-        }
-    })
-     $(".attr2.HDD, .attr2.SSD").on("click",function(){
+	$(document).ready(function(){
+		
+		
+		$(".color1").each(function () {
+			 $(".color").removeClass("active");
+	        $(this).addClass("active");
+	        if($(this).is(".color")){
+	        	var color = $(this).attr('style');
+	        	color = color.substring(color.indexOf('#'),color.length-1);
+	        	$("#color").val(color);
+	        }
+		});
+		
+		
+		$(".ramprice").each(function () {
+			
+			if($(this).val() == 0) {
+				var ram = $(this).parent().text();
+				
+				$("#ram").val(ram + "/0");
+			}
+			
+		});
+		
+		
+		$(".strhprice").each(function () {
+			
+			if($(this).val() == 0) {
+				var disk = $(this).parent().text();
+				var bool = $(this).hasClass("SSD");
+				
+				$("#disk").val( (bool?"SSD/":"HDD/") + disk + "/0");
+			}
+			
+		});
+		
+	    //-- Click on detail
+	    $("ul.menu-items > li").on("click",function(){
+	        $("ul.menu-items > li").removeClass("active");
+	        $(this).addClass("active");
+	    });
+	
+	    $(".color").on("click",function(){
+	        $(".color").removeClass("active");
+	        $(this).addClass("active");
+	        if($(this).is(".color")){
+	        	var color = $(this).attr('style');
+	        	color = color.substring(color.indexOf('#'),color.length-1);
+	        	$("#color").val(color);
+	        }
+	       
+	    });
+	    
+	    $(".ram").on("click",function(){
+	
+	        $(".ram").removeClass("active");
+	        $(this).addClass("active");
+	       
+	        if($(this).is(".ram")){
+	        	var ram = $(this).text();
+	        	var ramprice = $(this).find(".ramprice").val();
+	        	$("#ram").val(ram + "/" + ramprice);
+	        	console.log("ram:"+ram);
+	        	calcRamprice = Number(ramprice);
+	        }
+	        
+	        console.log(calcRamprice + calcDiskprice + productPrice);
+	        
+	        $("#salePrice").text((calcRamprice + calcDiskprice + productPrice).toLocaleString('en'));
+	    });
+	    
+	    
+	     $(".HDD, .SSD").on("click",function(){
+	
+	        $(".HDD, .SSD").removeClass("active");
+	        $(this).addClass("active");
+	       
+	        if($(this).is(".HDD")){
+	        	var disk = $(this).text();
+	        	var price = $(this).find(".strhprice").val();
+	        	$("#disk").val("HDD/"+disk + "/" + price);
+	        	console.log("disk:"+disk);
+	        	calcDiskprice = Number(price);
+	        }else{
+	        	var disk = $(this).text();
+	        	var price = $(this).find(".strhprice").val();
+	        	$("#disk").val("SSD/"+disk + "/" + price);
+	        	console.log("disk:"+disk);
+	        	calcDiskprice = Number(price);
+	        }
+	        
+	        $("#salePrice").text((calcRamprice + calcDiskprice + productPrice).toLocaleString('en'));
+	    });
+	    
+	
+	    //-- Click on QUANTITY
+	    $(".btn-minus").on("click",function(){
+	        var now = $(".section > div > input").val();
+	        if ($.isNumeric(now)){
+	            if (parseInt(now) -1 > 0){ now--;}
+	            $(".section > div > input").val(now);
+	        }else{
+	            $(".section > div > input").val("1");
+	        }
+	    });
+	    
+	    $(".btn-plus").on("click",function(){
+	        var now = $(".section > div > input").val();
+	        if ($.isNumeric(now)){
+	            $(".section > div > input").val(parseInt(now)+1);
+	        }else{
+	            $(".section > div > input").val("1");
+	        }
+	    });                        
+	}); 
 
-        $(".attr2.HDD, .attr2.SSD").removeClass("active");
-        $(this).addClass("active");
-       
-        if($(this).is(".HDD")){
-        	var disk = $(this).text();
-        	$("#disk").val("HDD"+disk);
-        	console.log("disk:"+disk);
-        }else{
-        	var disk = $(this).text();
-        	$("#disk").val("SSD"+disk);
-        	console.log("disk:"+disk);
-        }
-    })
+	
+	
 
-    //-- Click on QUANTITY
-    $(".btn-minus").on("click",function(){
-        var now = $(".section > div > input").val();
-        if ($.isNumeric(now)){
-            if (parseInt(now) -1 > 0){ now--;}
-            $(".section > div > input").val(now);
-        }else{
-            $(".section > div > input").val("1");
-        }
-    })            
-    $(".btn-plus").on("click",function(){
-        var now = $(".section > div > input").val();
-        if ($.isNumeric(now)){
-            $(".section > div > input").val(parseInt(now)+1);
-        }else{
-            $(".section > div > input").val("1");
-        }
-    })                        
-}) 
+	function addCartlist() {
+		
+		var color = $("#color").val();
+		var ram = $("#ram").val();
+		var disk = $("#disk").val();
+		
+		/* console.log(color);
+		console.log(ram);
+		console.log(disk); */
+		
+	}// end of addCartlist()-------------------------
+
 </script>
 <%-- contents start --%>
 <!-- Single Product -->
@@ -152,16 +228,15 @@ $(document).ready(function(){
 										
 										<div>
 										<%-- 색깔을 DB에 입력할땐 무조건 7자리 코드 + 색깔명으로 입력할것 --%>
-											<c:forEach var="colorMap" items="${ colorList }">
-												<div class="attr color" style="width: 25px; background:${ colorMap.color };"></div>
+											<c:forEach var="colorMap" items="${ colorList }" varStatus="i">
+												<div class="attr color color${ i.count }" style="width: 25px; background:${ colorMap.color };"></div>
 											</c:forEach>
 										
 										</div>
 									
-										<input type="hidden" name="color" id="color" value=""/>  
+										<input type="hidden" name="color" id="color" value=""/>   
 									</div>
 								</c:if>
-	
 								
 							</div>
 	
@@ -172,10 +247,10 @@ $(document).ready(function(){
 											<small>RAM</small>
 										</h4>
 										<div>
-											<c:forEach var="ramMap" items="${ ramList }">
-												<div class="attr2 ram" >${ ramMap.ramtype } GB</div>
+											<c:forEach var="ramMap" items="${ ramList }" varStatus="i">
+												<div class="attr2 ram" id="ram${ i.count }" >${ ramMap.ramtype }GB<input type="hidden" class="ramprice" value="${ ramMap.ramprice }" /></div>
 											</c:forEach>
-											<input type="hidden" name="ram" id="ram" value="" />
+											<input type="hidden" name="ram" id="ram" value="" /> 
 										</div>
 									</div>
 								</c:if>
@@ -189,7 +264,7 @@ $(document).ready(function(){
 											<c:if test="${ hddList != null }">
 												<h6 class="title-attr" style="margin-right:10px;"><small>HDD</small></h6>
 												<c:forEach var="storageMap" items="${ hddList }">
-													<div class="attr2 HDD">${ storageMap.strgsize }</div>
+													<div class="attr2 HDD">${ storageMap.strgsize }<input type="hidden" class="strhprice" value="${ storageMap.strhprice }"/></div>
 												</c:forEach>
 											</c:if>
 											<c:if test="${ hddList != null && ssdList != null }">
@@ -198,7 +273,7 @@ $(document).ready(function(){
 											<c:if test="${ ssdList != null }">
 												<h6 class="title-attr" style="margin-right:10px;"><small>SSD</small></h6>
 												<c:forEach var="storageMap" items="${ ssdList }">
-													<div class="attr2 SSD">${ storageMap.strgsize }</div>
+													<div class="attr2 SSD">${ storageMap.strgsize }<input type="hidden" class="strhprice" value="${ storageMap.strhprice }"/></div>
 												</c:forEach>
 											</c:if>
 											<input type="hidden" name="disk" value="" id="disk"/>
@@ -206,12 +281,25 @@ $(document).ready(function(){
 									</div>
 								</c:if>
 								
+								<div class="section">
+									<h3 class="title-attr" style="margin-top: 15px; text-align: right;">
+										가격
+									</h3>
+									
+									<h2 style="text-align: right; color: red;">
+										<span id="salePrice"><fmt:formatNumber value="${svo.saleprice}" pattern="###,###" /></span> 원
+									</h2>
+								</div>
+								
 							</div>
 	
 						</div>
+						
+						
+						
 	
 						<div class="button_container" style="margin-left: 24px;">
-							<button type="button" class="button cart_button">장바구니 추가</button>
+							<button type="button" class="button cart_button" onclick="addCartlist();">장바구니 추가</button>
 							<button type="button" class="button cart_button">구매하기</button> 
 						</div>
 	

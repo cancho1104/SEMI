@@ -47,8 +47,8 @@ public class ProdViewAction extends AbstractController {
 		
 		if("데스크탑".equals(fk_bcode) || "노트북".equals(fk_bcode)) {
 			List<HashMap<String, String>> ramList = sdao.getProdRam(pnum);
-			List<HashMap<String, String>> hddList = sdao.getProdStorage(pnum, "0");
-			List<HashMap<String, String>> ssdList = sdao.getProdStorage(pnum, "1");
+			List<HashMap<String, String>> hddList = sdao.getProdStorage(pnum, "1");
+			List<HashMap<String, String>> ssdList = sdao.getProdStorage(pnum, "0");
 			
 			req.setAttribute("ramList", ramList);
 			req.setAttribute("hddList", hddList);

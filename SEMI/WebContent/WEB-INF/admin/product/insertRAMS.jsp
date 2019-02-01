@@ -135,7 +135,7 @@
 							<td id="ram0">
 								<select class="form-control ram" id='ram0' name='rams'>
 									<option value="8/0" selected>DDR4 8GB</option>
-									<option value="16/80000" >DDR4 16GM</option>
+									<option value="16/80000" >DDR4 16GB</option>
 									<option value="32/160000" >DDR4 32GB</option>
 								</select>
 							</td>

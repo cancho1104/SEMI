@@ -212,7 +212,7 @@
 				return;
 			}
 			
-			if($("#case").val().trim() == ""){
+			if($("#rams").val().trim() == ""){
 				alert("램을 선택해주세요");
 				return;
 			}
@@ -232,7 +232,7 @@
 				return;
 			}
 			
-			if($("#case").val().trim() == ""){
+			if($("#case").val().trim() == "" && $("#bcategory").val() == "100000"){
 				alert("케이스를 입력해주세요");
 				return;
 			}
