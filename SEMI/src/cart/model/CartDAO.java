@@ -72,34 +72,66 @@ public class CartDAO implements InterCartDAO {
 	}//Eo close
 
 	@Override
-	public int insertCartList(int pnum, String userid,String color,String oqty,int saleprice) throws SQLException {
+	public int insertCartList(int pnum, String userid, String color, String oqty, String ram, String disk, int totalprice) throws SQLException {
+		
 		int result = 0;
+		
+		String[] ramArr = null;
+		String[] diskArr = null;
+		
+		if(ram != null && disk != null) {
+
+			ramArr = ram.split("/");
+			diskArr = disk.split("/");
+			
+		}
+		
+		System.out.println(userid + " " + pnum + " " + color + " " + oqty + " " + ram + " " + disk + " " + totalprice);
+		
 		try {
 			conn = ds.getConnection();
-			String sql = " insert into semi_cartList(cnum, fk_userid, fk_pnum,oqty,color,totalPrice)\n"
-					+ "	   values(seq_semi_cartList_cnum.nextval,?,?,?,?,?)    ";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, userid);
-			pstmt.setInt(2, pnum);
-			if(color == null || "".equals(color)) {
-				System.out.println("zzz");
-				pstmt.setInt(3, 1);
-				pstmt.setString(4, "#000000");
-			}else {
-				System.out.println("111");
+			
+			String sql = "";
+			
+			if(ramArr != null && diskArr != null) {
+				sql = " insert into semi_cartList(cnum, fk_userid, fk_pnum, oqty, color, totalprice, ramtype, strgtype, strgsize)\n"
+					+ " values(seq_semi_cartList_cnum.nextval,?,?,?,?,?,?,?,?)";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, userid);
+				pstmt.setInt(2, pnum);
 				pstmt.setInt(3, Integer.parseInt(oqty));
 				pstmt.setString(4, color);
+				pstmt.setInt(5, totalprice);
+				pstmt.setString(6, ramArr[0]);
+				pstmt.setInt(7, diskArr[0].equals("HDD")?1:2);
+				pstmt.setString(8, diskArr[1]);
+				
+				
 			}
-			pstmt.setInt(5, saleprice);
-			System.out.println("pnum:"+pnum+",userid:"+userid+",color:"+color+",oqty:"+oqty+",saleprice:"+saleprice);
+			else {
+				sql = " insert into semi_cartList(cnum, fk_userid, fk_pnum, oqty, color, totalprice)\n"
+					+ " values(seq_semi_cartList_cnum.nextval,?,?,?,?,?)";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, userid);
+				pstmt.setInt(2, pnum);
+				pstmt.setInt(3, Integer.parseInt(oqty));
+				pstmt.setString(4, color);
+				pstmt.setInt(5, totalprice);
+			}
+			
+			
 			result = pstmt.executeUpdate();
 		}finally {
 			
-			
 			close();
 		}
+		
 		return result;
-	}
+	}// end of insertCartList()------------------------------------
 
 	@Override
 	public List<CartVO> getCartListByUser(String userid) throws SQLException {
@@ -156,18 +188,18 @@ public class CartDAO implements InterCartDAO {
 	}
 
 	@Override
-	public int cartDelete(int pnum) throws SQLException {
+	public int cartDelete(int cnum) throws SQLException {
 		int result = 0;
 		try {
 			conn = ds.getConnection();
-			String sql = " delete semi_cartList where fk_pnum = ? ";
+			String sql = " delete semi_cartList where cnum = ? ";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, pnum);
+			pstmt.setInt(1, cnum);
 			result = pstmt.executeUpdate();
 			
 		}finally {
 			close();
 		}
 		return result;
-	}
+	}// end of cartDelete()-------------------------------------
 }

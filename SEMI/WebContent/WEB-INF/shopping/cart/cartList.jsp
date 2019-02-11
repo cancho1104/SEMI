@@ -32,18 +32,54 @@ $(document).ready(function(){
 	
 	$(".chk").click(function(){
 		
+		console.log($("#order_total").val());
+		
 		if($(this).prop('checked') ){
 			var orderAmount = $("#order_total").val();
 			var price = $(this).parent().parent().find(".cart_item_price").find(".price").val();
 			$("#order_total").val(parseInt(orderAmount)+parseInt(price));
-			$(".order_total_amount").text(((parseInt(orderAmount)+parseInt(price)).toString()).toLocaleString());
+			$(".order_total_amount").text(((parseInt(orderAmount)+parseInt(price)).toString()).toLocaleString('en'));
 		}else{
 			var orderAmount = $("#order_total").val();
 			var price = $(this).parent().parent().find(".cart_item_price").find(".price").val();
-			$("#order_total").val(parseInt(orderAmount)+parseInt(price))
-			$(".order_total_amount").text(((parseInt(orderAmount)-parseInt(price)).toString()).toLocaleString());
+			$("#order_total").val(parseInt(orderAmount)-parseInt(price))
+			$(".order_total_amount").text(((parseInt(orderAmount)-parseInt(price)).toString()).toLocaleString('en'));
 		}
 	
+	});
+	
+	// 제품 수량에 따른 가격 변경
+	$(".oqty").change(function () {
+		
+		var target = $(this).parent().parent().parent();
+		var orgprice = target.find(".orgprice").val();
+		var oqty = $(this).val();
+		var price = oqty * orgprice;
+		
+		// 체크 되었을 경우 totalprice 가격 변동
+		if(target.find(".chk").prop('checked')){
+			
+			var order_total = $("#order_total").val();
+			
+			console.log(order_total);
+			
+			order_total = Number(order_total) - Number(target.find(".price").val());
+			
+			$("#order_total").val(order_total + Number(price));
+			
+			$(".order_total_amount").text( ( ( order_total + price ).toString() ).toLocaleString('en') );
+			
+			console.log( ( ( order_total + price ).toString() ).toLocaleString('en') );
+			
+		} 
+		
+		
+		
+		
+		console.log(oqty * orgprice); 
+		
+		target.find(".price").val(oqty * orgprice);
+		
 	});
 	
 	$("#allCheck").click(function(){
@@ -64,9 +100,9 @@ $(document).ready(function(){
 	
 });//Eo ready
 
-function deleteCart(pnum){
+function deleteCart(cnum){
 	
-	$("#delPnum").val(pnum);
+	$("#delCnum").val(cnum);
 	var frm = document.cartDel;
 	frm.submit();
 	
@@ -102,12 +138,15 @@ function deleteCart(pnum){
 												</div>
 												<div class="cart_item_quantity cart_info_col col-lg-1" style="margin-right:30px;">
 													<div class="cart_item_title">수량</div>
-													<div class="cart_item_text"><input type="number" value="${cvo.oqty }" style="width: 50px; text-align: center;" /></div> 
+													<div class="cart_item_text">
+														<input type="number" class="oqty" value="${cvo.oqty }" style="width: 50px; text-align: center;" />
+													</div> 
 												</div>   
 												<div class="cart_item_price cart_info_col col-lg-2" style="margin-right:30px;">
 													<div class="cart_item_title" >상품가격</div>
 													<div class="cart_item_text"><fmt:formatNumber  value="${cvo.saleprice }" pattern="#,###,###,###"/></div>원
 													<input class="price" type="hidden" value="${cvo.saleprice }"/>
+													<input class="orgprice" type="hidden" value="${cvo.saleprice }"/>
 												
 												</div>
 												
@@ -116,7 +155,7 @@ function deleteCart(pnum){
 													<div class="cart_item_text">
 														<ul>
 															<li><button type="button" class="btn btn-danger btn-sm" style="font-size: 12pt; cursor:pointer;">주문하기</button></li>												
-															<li><button type="button" class="btn btn-success btn-sm" style="font-size: 12pt; cursor:pointer;" onClick="deleteCart('${cvo.pnum}');">삭제하기</button></li>
+															<li><button type="button" class="btn btn-success btn-sm" style="font-size: 12pt; cursor:pointer;" onClick="deleteCart('${cvo.cnum}');">삭제하기</button></li>
 														</ul>
 													</div>
 												</div>										
@@ -138,14 +177,14 @@ function deleteCart(pnum){
 							</ul>
 						</div>
 						<form name="cartDel" method="GET" action="cartDel.do">
-							<input type="hidden" name="pnum" id="delPnum" value="0"/>
+							<input type="hidden" name="cnum" id="delCnum" value="0"/>
 						</form>
 						<c:if test="${ cartList != null }">
 							<!-- Order Total -->
 							<div class="order_total">
 								<div class="order_total_content text-md-right">
 									<div class="order_total_title">Order Total:</div>
-									<input type="hidden" id="order_total" value="0"/>
+									<input type="text" id="order_total" value="0"/> 
 									<div class="order_total_amount">0 </div>원
 								</div>
 							</div>

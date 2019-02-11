@@ -59,27 +59,7 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
 		});
 		
 		
-		$(".ramprice").each(function () {
-			
-			if($(this).val() == 0) {
-				var ram = $(this).parent().text();
-				
-				$("#ram").val(ram + "/0");
-			}
-			
-		});
 		
-		
-		$(".strhprice").each(function () {
-			
-			if($(this).val() == 0) {
-				var disk = $(this).parent().text();
-				var bool = $(this).hasClass("SSD");
-				
-				$("#disk").val( (bool?"SSD/":"HDD/") + disk + "/0");
-			}
-			
-		});
 		
 	    //-- Click on detail
 	    $("ul.menu-items > li").on("click",function(){
@@ -163,16 +143,39 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
 
 	
 	
-
+	// 장바구니 추가 함수
 	function addCartlist() {
 		
 		var color = $("#color").val();
 		var ram = $("#ram").val();
 		var disk = $("#disk").val();
+		var totalprice = productPrice + calcRamprice + calcDiskprice;
 		
-		/* console.log(color);
-		console.log(ram);
-		console.log(disk); */
+		if(color == "") {
+			alert("색상을 선택하세요");
+			return;
+		}
+		
+		if(ram == "") {
+			alert("램을 선택하세요");
+			return;
+		}
+		
+		if(disk == "") {
+			alert("저장장치를 선택하세요");
+			return;
+		}
+		
+		console.log(color + " " + ram + " " + disk + " " + totalprice);
+		
+		$("#totalprice").val(totalprice);
+		
+		var frm = document.orderFrm;
+		
+		frm.method = "POST";
+		frm.action = "addCart.do";
+		frm.submit();
+		
 		
 	}// end of addCartlist()-------------------------
 
@@ -210,7 +213,7 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
 						</div>
 					</div>
 					<br /> <br />
-					<form>
+					<form name="orderFrm">
 	
 						<div style="margin-left: 30px; border: 0px solid gray;">
 							<div>
@@ -218,7 +221,7 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
 									for="sel0"><small>수량</small>&nbsp;: </label> 
 								</h4> <input class="form-control"
 									style="margin-left: 5px; width: 65px; display: inline-block;"
-									type="number" name="quantity" id="sel0" min="1" max="99"
+									type="number" name="oqty" id="sel0" min="1" max="99"
 									value="1" />
 								<c:if test="${ colorList != null }">
 									<div class="section">
@@ -250,7 +253,7 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
 											<c:forEach var="ramMap" items="${ ramList }" varStatus="i">
 												<div class="attr2 ram" id="ram${ i.count }" >${ ramMap.ramtype }GB<input type="hidden" class="ramprice" value="${ ramMap.ramprice }" /></div>
 											</c:forEach>
-											<input type="hidden" name="ram" id="ram" value="" /> 
+											<input type="text" name="ram" id="ram" value="" /> 
 										</div>
 									</div>
 								</c:if>
@@ -276,7 +279,7 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
 													<div class="attr2 SSD">${ storageMap.strgsize }<input type="hidden" class="strhprice" value="${ storageMap.strhprice }"/></div>
 												</c:forEach>
 											</c:if>
-											<input type="hidden" name="disk" value="" id="disk"/>
+											<input type="text" name="disk" value="" id="disk"/>
 										</div>
 									</div>
 								</c:if>
@@ -295,7 +298,8 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
 	
 						</div>
 						
-						
+						<input type="hidden" name="pnum" value="${ svo.pnum }"/>
+						<input type="hidden" id="totalprice" name="totalprice" value=""/> 
 						
 	
 						<div class="button_container" style="margin-left: 24px;">

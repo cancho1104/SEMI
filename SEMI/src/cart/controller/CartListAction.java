@@ -30,6 +30,7 @@ public class CartListAction extends AbstractController {
 			super.setViewPage("WEB-INF/msg.jsp");
 			return;
 		}
+		
 		InterCartDAO cdao = new CartDAO();
 		List<CartVO> cartList = cdao.getCartListByUser(loginuser.getUserid());
 		

@@ -26,10 +26,10 @@ public class CartDelAction extends AbstractController {
 			super.setViewPage("WEB-INF/msg.jsp");
 			return;
 		}
-		String str_pnum = req.getParameter("pnum");
-		int pnum = 0;
+		String str_cnum = req.getParameter("cnum");
+		int cnum = 0;
 		try {
-			pnum = Integer.parseInt(str_pnum);
+			cnum = Integer.parseInt(str_cnum);
 		}catch(NumberFormatException e) {
 			String msg = "숫자를 입력해주세요..";
 			String loc = "javascript:history.back()";
@@ -38,7 +38,7 @@ public class CartDelAction extends AbstractController {
 			super.setViewPage("/WEB-INF/msg.jsp");
 		}
 		CartDAO cdao = new CartDAO();
-		int result = cdao.cartDelete(pnum);
+		int result = cdao.cartDelete(cnum);
 	
 		if(result == 1) {
 			String msg = "삭제되었습니다.";
